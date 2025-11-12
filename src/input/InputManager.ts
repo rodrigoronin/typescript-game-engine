@@ -1,15 +1,22 @@
-const directions = {
+export interface IDirections {
+  up: boolean;
+  down: boolean;
+  left: boolean;
+  right: boolean;
+}
+
+const directions: IDirections = {
   up: false,
   down: false,
   left: false,
   right: false,
 };
 
-export function isMoving() {
+export function isMoving(): boolean {
   return directions.up || directions.down || directions.left || directions.right;
 }
 
-export function getDirections() {
+export function getDirections(): IDirections {
   return directions;
 }
 
