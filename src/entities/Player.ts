@@ -27,6 +27,20 @@ export class Player {
     Object.assign(this, playerData);
   }
 
+  getBounds() {
+    const top: number = this.position.y;
+    const left: number = this.position.x;
+    const right: number = this.position.x + this.size.width;
+    const bottom: number = this.position.y + this.size.height;
+
+    return {
+      top,
+      left,
+      bottom,
+      right,
+    };
+  }
+
   update(deltaTime: number, directions: IDirections) {
     let moveX: number = 0;
     let moveY: number = 0;
