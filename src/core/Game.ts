@@ -1,69 +1,108 @@
-import { GAME_WIDTH, GAME_HEIGHT, gameCtx, renderToDisplay } from "./Canvas";
+import { Application, Assets, Container, Rectangle, Sprite, Texture } from "pixi.js";
 import { Camera } from "./Camera";
-import { Player } from "../entities/Player";
+
+import william from "../assets/william_idle.png";
 import { getDirections } from "../input/InputManager";
-import { props, renderGrid } from "../maps/TrainingRoom";
+import { Player } from "../entities/Player";
 
-const camera = new Camera({
-  position: {
-    x: 0,
-    y: 0,
-  },
-  size: {
-    width: GAME_WIDTH,
-    height: GAME_HEIGHT,
-  },
-  lerpSpeed: 0.09,
-});
+export class Game {
+  app: Application;
+  camera!: Camera;
+  worldLayer!: Container;
+  entityLayer!: Container;
+  FXLayer!: Container;
+  UILayer!: Container;
+  player!: Player;
 
-let lastTime: number = 0;
+  constructor(app: Application) {
+    this.app = app;
 
-const player = new Player({
-  position: { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 },
-  size: { width: 48, height: 48 },
-  speed: 100,
-  color: "green",
-});
+    this.initLayers();
+    this.initPlayer();
+    this.initCamera();
+    this.initWorld();
+  }
 
-export function update(deltaTime: number): void {
-  if (deltaTime > 0) {
+  async init() {
+    await this.initPlayer();
+    this.initCamera();
+  }
+
+  initLayers() {
+    this.worldLayer = new Container();
+    this.entityLayer = new Container();
+    this.FXLayer = new Container();
+    this.UILayer = new Container();
+
+    this.app.stage.addChild(this.worldLayer, this.entityLayer, this.FXLayer, this.UILayer);
+  }
+
+  async initPlayer() {
+    const texture = await Assets.load(william);
+    const frame0: Texture = new Texture({
+      source: texture,
+      frame: new Rectangle(0, 0, 64, 64)
+    });
+    const playerSprite: Sprite = new Sprite(frame0);
+
+    this.player = new Player(playerSprite);
+    this.player.sprite.pivot.set(0.5);
+
+    this.player.sprite.x = 300;
+    this.player.sprite.y = 300;
+
+    this.entityLayer.addChild(this.player.sprite);
+  }
+
+  initCamera() {
+    this.camera = new Camera({
+      position: { x: 0, y: 0 },
+      size: {
+        width: this.app.screen.width,
+        height: this.app.screen.height,
+      },
+      lerpSpeed: 0.08,
+    });
+  }
+
+  initWorld() {
+
+  }
+
+  readInputs(dt: number) {
     const dir = getDirections();
-    player.update(deltaTime, dir);
+
+    let moveX = 0;
+    let moveY = 0;
+
+    if (dir.left) moveX -= 1;
+    if (dir.right) moveX += 1;
+    if (dir.up) moveY -= 1;
+    if (dir.down) moveY += 1;
+
+    const magnitude = Math.hypot(moveX, moveY);
+
+    if (magnitude !== 0) {
+      moveX /= magnitude;
+      moveY /= magnitude;
+    }
+
+    this.player.velocity.x = moveX;
+    this.player.velocity.y = moveY;
+  }
+
+  readPlayer(deltaTime: number) {
+    this.player.update(deltaTime);
+  }
+
+  update(deltaMS: number) {
+    if (!this.player) return;
+
+    const dt = deltaMS / 1000;
+
+    this.readInputs(dt);
+    this.readPlayer(dt);
+    // this.readCamera(dt);
+    // this.updateLayers();
   }
 }
-
-function render(): void {
-  if (!gameCtx) return;
-
-  gameCtx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-  renderGrid(gameCtx, camera);
-  props.forEach((p) => p.render(gameCtx, camera));
-
-  gameCtx.fillStyle = player.color;
-  gameCtx.fillRect(
-    player.position.x - camera.position.x - player.size.width / 2,
-    player.position.y - camera.position.y - player.size.height / 2,
-    player.size.width,
-    player.size.height
-  );
-}
-
-// The value passed from requestAnimationFrame is a timestamp
-// not the delta time between frames, we need to calculate it ourselves
-// delta time: time difference between current frame and last frame
-function gameLoop(timestamp: number): void {
-  if (!lastTime) lastTime = timestamp; // Initialize lastTime on the first frame
-  const deltaTime = timestamp - lastTime;
-  lastTime = timestamp;
-
-  update(deltaTime);
-  camera.follow(player.position.x, player.position.y);
-  camera.update();
-  // render();
-  renderToDisplay();
-
-  requestAnimationFrame(gameLoop);
-}
-
-export { gameLoop };
