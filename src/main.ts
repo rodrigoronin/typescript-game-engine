@@ -1,8 +1,14 @@
 import { Application, Assets, Container, Rectangle, Sprite, Texture } from 'pixi.js';
+import { StateManager, GameState } from './core/state/StateManage';
 
 import "./index.css";
 
 import william from './assets/william_idle.png';
+
+const state = new StateManager();
+state.setState(GameState.GAME);
+
+const speed = 3;
 
 // Pixi.js always need an IIFE to work properly with Vite
 (async () => {
@@ -20,8 +26,6 @@ import william from './assets/william_idle.png';
 
   // Set a container to hold the entities for now
   const container: Container = new Container();
-  container.width = app.screen.width;
-  container.height = app.screen.height;
 
   app.stage.addChild(container);
 
@@ -30,11 +34,12 @@ import william from './assets/william_idle.png';
   container.addChild(player);
 
   player.scale.set(2);
-  container.position.set(app.screen.width / 2, app.screen.height / 2);
 
   // This is the render loop (I guess)
-  app.ticker.add((time) => {
-    updatePlayer(player, time.deltaTime);
+  app.ticker.add((ticker) => {
+    if (state.state === GameState.PAUSED) return;
+
+    updatePlayer(player, ticker.deltaTime);
   });
 })();
 
@@ -60,14 +65,11 @@ async function loadPlayer() {
 
   const player: Sprite = new Sprite(frame);
   player.anchor.set(0.5);
-  player.speed = 3;
 
   return player;
 }
 
 function updatePlayer(player: Sprite, delta: number) {
-  const speed: number = player.speed;
-
   let vx: number = 0;
   let vy: number = 0;
 
@@ -97,7 +99,16 @@ const keys: Record<string, boolean> = {
 // event listeners for inputs
 window.addEventListener('keydown', (e) => {
   const input = e.key.toLowerCase();
+
   if (keys[input] !== undefined) keys[input] = true;
+
+  if (e.key === 'Escape') {
+    if (state.state === GameState.PAUSED) {
+      state.setState(GameState.PLAYING)
+    } else {
+      state.setState(GameState.PAUSED)
+    }
+  }
 })
 window.addEventListener('keyup', (e) => {
   const input = e.key.toLowerCase();
