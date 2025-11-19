@@ -7,7 +7,7 @@ export class Player {
   speed = 150;
 
   constructor(sprite: Sprite) {
-    this.sprite = sprite
+    this.sprite = sprite;
     this.sprite.anchor.set(0.5, 0.5);
   }
 

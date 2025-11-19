@@ -13,19 +13,23 @@ export function buildPropsFromGrid(): void {
       const posY = row * CELL_SIZE;
 
       if (MAP_GRID[row][col] === 1) {
-        props.push(new Prop({
-          position: { x: posX, y: posY },
-          size: { w: 32, h: 32},
-          isSolid: true,
-          color: '#FFF'
-        }))
+        props.push(
+          new Prop({
+            position: { x: posX, y: posY },
+            size: { w: 32, h: 32 },
+            isSolid: true,
+            color: "#FFF",
+          }),
+        );
       } else if (MAP_GRID[row][col] === 2) {
-        props.push(new Prop({
-          position: { x: posX, y: posY },
-          size: { w: 32, h: 32},
-          isSolid: true,
-          color: 'red'
-        }))
+        props.push(
+          new Prop({
+            position: { x: posX, y: posY },
+            size: { w: 32, h: 32 },
+            isSolid: true,
+            color: "red",
+          }),
+        );
       }
     }
   }
@@ -33,7 +37,10 @@ export function buildPropsFromGrid(): void {
 
 buildPropsFromGrid();
 
-export function renderGrid(ctx: CanvasRenderingContext2D, camera: ICamera): void {
+export function renderGrid(
+  ctx: CanvasRenderingContext2D,
+  camera: ICamera,
+): void {
   const cameraX = camera.position.x;
   const cameraY = camera.position.y;
 

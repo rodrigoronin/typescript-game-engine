@@ -1,4 +1,11 @@
-import { Application, Assets, Container, Rectangle, Sprite, Texture } from "pixi.js";
+import {
+  Application,
+  Assets,
+  Container,
+  Rectangle,
+  Sprite,
+  Texture,
+} from "pixi.js";
 import { Camera } from "./Camera";
 
 import william from "../assets/william_idle.png";
@@ -34,14 +41,19 @@ export class Game {
     this.FXLayer = new Container();
     this.UILayer = new Container();
 
-    this.app.stage.addChild(this.worldLayer, this.entityLayer, this.FXLayer, this.UILayer);
+    this.app.stage.addChild(
+      this.worldLayer,
+      this.entityLayer,
+      this.FXLayer,
+      this.UILayer,
+    );
   }
 
   async initPlayer() {
     const texture = await Assets.load(william);
     const frame0: Texture = new Texture({
       source: texture,
-      frame: new Rectangle(0, 0, 64, 64)
+      frame: new Rectangle(0, 0, 64, 64),
     });
     const playerSprite: Sprite = new Sprite(frame0);
 
@@ -65,9 +77,7 @@ export class Game {
     });
   }
 
-  initWorld() {
-
-  }
+  initWorld() {}
 
   readInputs(dt: number) {
     const dir = getDirections();

@@ -21,6 +21,11 @@ export class Prop {
 
   render(ctx: CanvasRenderingContext2D, camera: ICamera) {
     ctx.fillStyle = this.color;
-    ctx.fillRect(this.position.x - camera.position.x, this.position.y - camera.position.y, this.size.w, this.size.h);
+    ctx.fillRect(
+      this.position.x - camera.position.x,
+      this.position.y - camera.position.y,
+      this.size.w,
+      this.size.h,
+    );
   }
 }

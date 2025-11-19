@@ -1,14 +1,16 @@
 import { Application, Assets, Container, Rectangle, Sprite, Texture } from 'pixi.js';
 import { StateManager, GameState } from './core/state/StateManage';
 
-import "./index.css";
+import './index.css';
 
 import william from './assets/william_idle.png';
+import { InputAction, InputManager } from './core/input/InputManager';
 
 const state = new StateManager();
 state.setState(GameState.GAME);
 
 const speed = 3;
+const input = new InputManager();
 
 // Pixi.js always need an IIFE to work properly with Vite
 (async () => {
@@ -16,7 +18,7 @@ const speed = 3;
 
   // Init the app vefore everything
   await app.init({
-    background: "#3bad1bff",
+    background: '#3bad1bff',
     width: 640,
     height: 360,
     resizeTo: window,
@@ -37,8 +39,6 @@ const speed = 3;
 
   // This is the render loop (I guess)
   app.ticker.add((ticker) => {
-    if (state.state === GameState.PAUSED) return;
-
     updatePlayer(player, ticker.deltaTime);
   });
 })();
@@ -60,7 +60,7 @@ async function loadPlayer() {
       0, // fixed 0 because the actual placeholder sprite is one row only
       frameWidth,
       frameHeight
-    )
+    ),
   });
 
   const player: Sprite = new Sprite(frame);
@@ -73,13 +73,13 @@ function updatePlayer(player: Sprite, delta: number) {
   let vx: number = 0;
   let vy: number = 0;
 
-  if (keys.w) vy -= speed;
-  if (keys.a) vx -= speed;
-  if (keys.s) vy += speed;
-  if (keys.d) vx += speed;
+  if (input.isPressed(InputAction.Up)) vy -= speed;
+  if (input.isPressed(InputAction.Left)) vx -= speed;
+  if (input.isPressed(InputAction.Down)) vy += speed;
+  if (input.isPressed(InputAction.Right)) vx += speed;
 
   // normalized diagonal with magnitude
-  const magnitude: number = Math.hypot(vx, vy)
+  const magnitude: number = Math.hypot(vx, vy);
   if (magnitude > 0) {
     vx = (vx / magnitude) * speed;
     vy = (vy / magnitude) * speed;
@@ -88,29 +88,3 @@ function updatePlayer(player: Sprite, delta: number) {
   player.x += vx * delta;
   player.y += vy * delta;
 }
-
-const keys: Record<string, boolean> = {
-  w: false,
-  a: false,
-  s: false,
-  d: false
-}
-
-// event listeners for inputs
-window.addEventListener('keydown', (e) => {
-  const input = e.key.toLowerCase();
-
-  if (keys[input] !== undefined) keys[input] = true;
-
-  if (e.key === 'Escape') {
-    if (state.state === GameState.PAUSED) {
-      state.setState(GameState.PLAYING)
-    } else {
-      state.setState(GameState.PAUSED)
-    }
-  }
-})
-window.addEventListener('keyup', (e) => {
-  const input = e.key.toLowerCase();
-  if (keys[input] !== undefined) keys[input] = false;
-});
