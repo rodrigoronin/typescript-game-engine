@@ -59,3 +59,20 @@ async function loadPlayer() {
 
   return player;
 }
+
+const keys: Record<string, boolean> = {
+  w: false,
+  a: false,
+  s: false,
+  d: false
+}
+
+// event listeners for input
+window.addEventListener('keyup', (e) => {
+  const input = e.key.toLowerCase();
+  if (keys[input] !== undefined) keys[input] = true;
+})
+window.addEventListener('keyup', (e) => {
+  const input = e.key.toLowerCase();
+  if (keys[input] !== undefined) keys[input] = false;
+});
