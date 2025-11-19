@@ -1,4 +1,4 @@
-import { Application, Assets, Container, FederatedPointerEvent, Rectangle, Sprite, Texture } from 'pixi.js';
+import { Application, Assets, Container, Rectangle, Sprite, Texture } from 'pixi.js';
 
 import "./index.css";
 
