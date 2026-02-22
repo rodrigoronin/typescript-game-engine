@@ -36,5 +36,4 @@ app.stage.addChild(world);
 app.ticker.add((ticker) => {
   const dt = ticker.deltaMS / 1000;
 });
-
 document.body.appendChild(app.canvas);
