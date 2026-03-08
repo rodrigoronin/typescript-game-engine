@@ -1,8 +1,8 @@
-import { Application, Assets, Container, Sprite } from "pixi.js";
+import { Application, Assets, Container } from "pixi.js";
+import texture from "./Game/Assets/wizard.png";
+import { Player } from "./Game/Player";
 
 import "./style..css";
-
-import texture from "./Game/Assets/wizard.png";
 
 const app: Application = new Application();
 await app.init({
@@ -11,23 +11,21 @@ await app.init({
   background: "#3d3d3d",
 });
 
+const world: Container = new Container();
+
 const playerTexture = await Assets.load(texture);
 
-const player: Container = new Container();
-const playerSprite = new Sprite();
-playerSprite.texture = playerTexture;
-playerSprite.texture.source.scaleMode = "nearest";
-playerSprite.anchor.set(0.5);
-player.addChild(playerSprite);
-player.position.set(100);
+const player: Player = new Player(playerTexture);
 
-app.stage.addChild(player);
+world.addChild(player.container);
+
+world.scale.set(2);
+
+app.stage.addChild(world);
 app.stage.scale.set(2);
 
-const speed = 50;
-
 app.ticker.add((ticker) => {
-  // player.x += (speed * ticker.deltaMS) / 1000;
+  const dt = ticker.deltaMS / 1000;
 });
 
 document.body.appendChild(app.canvas);
