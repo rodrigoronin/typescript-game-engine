@@ -1,8 +1,11 @@
 import { Application, Assets, Container } from "pixi.js";
-import texture from "./Game/Assets/wizard.png";
 import { Player } from "./Game/Player";
+import { NPC } from "./Game/NPC";
 
 import "./style..css";
+
+import playerImg from "./Game/Assets/wizard.png";
+import vaatiImg from "./Game/Assets/Vaati.png";
 
 const app: Application = new Application();
 await app.init({
@@ -13,16 +16,21 @@ await app.init({
 
 const world: Container = new Container();
 
-const playerTexture = await Assets.load(texture);
+const textures = await Assets.load([playerImg, vaatiImg]);
+const [playerTexture, vaatiTexture] = Object.values(textures);
 
 const player: Player = new Player(playerTexture);
+player.container.position.set(100);
+const vaati: NPC = new NPC(vaatiTexture);
+vaati.container.position.x = 200;
+vaati.container.position.y = 100;
 
 world.addChild(player.container);
+world.addChild(vaati.container);
 
-world.scale.set(2);
+world.scale.set(3);
 
 app.stage.addChild(world);
-app.stage.scale.set(2);
 
 app.ticker.add((ticker) => {
   const dt = ticker.deltaMS / 1000;

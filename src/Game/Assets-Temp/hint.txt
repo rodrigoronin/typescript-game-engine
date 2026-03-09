@@ -1,0 +1,21 @@
+Remove -Temp from this folder and store your assets here, the AssetManager will read the data fro mthis location to load them to the Engine.
+
+Here is the structure you need to follow:
+
+Assets/ *this folder*
+  - Images
+  - Audios
+  - Videos
+  - Fonts
+
+You should not change the subfolders names because the AssetManager wiil look for them, but you can create another layer of subfolders inside them, for example:
+
+Assets/ *this folder*
+  - Images/
+      Sprites/
+      Maps/
+  - Audios/
+      Combat/
+        Swords/
+        Daggers/
+      Atmosphere/
