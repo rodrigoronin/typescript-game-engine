@@ -1,4 +1,5 @@
 import { Application, Assets, Container } from "pixi.js";
+import { InputSystem } from "./Engine/Systems/InputSystem";
 import { Player } from "./Game/Player";
 import { NPC } from "./Game/NPC";
 
@@ -33,8 +34,15 @@ world.scale.set(3);
 
 app.stage.addChild(world);
 
+const input: InputSystem = InputSystem.get();
+
 app.ticker.add((ticker) => {
   const dt = ticker.deltaMS / 1000;
-});
 
+  input.poll();
+
+  player.update(ticker.deltaMS);
+
+  input.commit();
+});
 document.body.appendChild(app.canvas);
