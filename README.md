@@ -1,4 +1,4 @@
-# Krab Game Engine
+# Kraby Game Engine
 
 A lightweight 2D action RPG engine built with TypeScript and PixiJS.
 
